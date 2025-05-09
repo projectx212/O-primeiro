@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explana</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Botão para abrir o menu -->
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <!-- Menu lateral -->
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="#" onclick="loginAsAdmin()">Logar como Administrador</a></li>
+    </ul>
+  </div>
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <h1>Explana</h1>
+    <p>Bem-vindo ao Explana</p>
+    <button class="enter-chat" onclick="enterChat()">Entrar no Chat</button>
+  </div>
+
+  <script>
+    // Alternar o menu lateral
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('open');
+    }
+
+    // Função para logar como administrador
+    function loginAsAdmin() {
+      const username = prompt("Digite seu nome de administrador:") || "Anônimo";
+      const password = prompt("Digite a senha do administrador:");
+      alert('Você está logado como administrador.');
+      toggleMenu();
+    }
+
+    // Função para entrar no chat
+    function enterChat() {
+      window.location.href = "chat.html"; // Redireciona para a página do chat
+    }
+  </script>
+</body>
+</html>

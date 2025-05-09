@@ -1,0 +1,24 @@
+{
+  "name": "anon-chat",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/projectx212/anon-chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/projectx212/anon-chat/issues"
+  },
+  "homepage": "https://github.com/projectx212/anon-chat#readme",
+  "description": ""
+}

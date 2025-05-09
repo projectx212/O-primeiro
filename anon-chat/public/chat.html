@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explana - Chat</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Botão para abrir o menu -->
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <!-- Menu lateral -->
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="#" onclick="loginAsAdmin()">Logar como Administrador</a></li>
+    </ul>
+  </div>
+
+  <!-- Container do chat -->
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <!-- Histórico de mensagens será carregado aqui -->
+    </div>
+    <form id="form" class="input-container">
+      <input id="input" type="text" placeholder="Digite sua mensagem..." autocomplete="off" />
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+    let username = "Anônimo";
+
+    // Alternar o menu lateral
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('open');
+    }
+
+    // Logar como administrador
+    function loginAsAdmin() {
+      username = prompt("Digite seu nome de administrador:") || "Anônimo";
+      const password = prompt("Digite a senha do administrador:");
+      if (username === "m1000" && password === "admin123") {
+        alert('Você está logado como administrador.');
+      } else {
+        alert('Credenciais inválidas. Você será logado como usuário anônimo.');
+        username = "Anônimo";
+      }
+      toggleMenu();
+    }
+
+    // Enviar mensagem
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', { name: username, text: input.value });
+        input.value = '';
+      }
+    });
+
+    // Receber mensagens
+    socket.on('chat message', (msg) => {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+      messageElement.setAttribute('data-id', msg.id); // Adicionar ID para exclusão
+      messageElement.innerHTML = `
+        <strong>${msg.name}:</strong> <span>${msg.text}</span>
+        ${username === "m1000" ? `<button class="delete-btn" onclick="deleteMessage('${msg.id}')">Apagar</button>` : ''}
+      `;
+      messages.appendChild(messageElement);
+      messages.scrollTop = messages.scrollHeight; // Scroll automático
+    });
+
+    // Função para apagar mensagens
+    function deleteMessage(messageId) {
+      socket.emit('delete message', messageId);
+    }
+
+    // Atualizar mensagens após exclusão
+    socket.on('delete message', (messageId) => {
+      const messageElement = document.querySelector(`[data-id="${messageId}"]`);
+      if (messageElement) {
+        messageElement.remove();
+      }
+    });
+
+    // Receber histórico de mensagens
+    socket.on('chat history', (history) => {
+      history.forEach((msg) => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.setAttribute('data-id', msg.id); // Adicionar ID para exclusão
+        messageElement.innerHTML = `
+          <strong>${msg.name}:</strong> <span>${msg.text}</span>
+          ${username === "m1000" ? `<button class="delete-btn" onclick="deleteMessage('${msg.id}')">Apagar</button>` : ''}
+        `;
+        messages.appendChild(messageElement);
+      });
+      messages.scrollTop = messages.scrollHeight; // Scroll automático
+    });
+  </script>
+</body>
+</html>
